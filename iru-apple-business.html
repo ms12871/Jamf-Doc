@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f1e9">
+  <meta name="description" content="A public-reference setup guide for connecting Iru Endpoint to Apple Business and enrolling Apple devices with Automated Device Enrollment.">
+  <title>Iru + Apple Business | Fieldnotes</title>
+  <style>
+    :root { color-scheme: light; --paper:#f4f1e9; --ink:#202722; --muted:#68736a; --line:#d9ddd3; --green:#315d45; --green-soft:#e1eadd; --coral:#b7513b; --yellow:#e7c86a; --white:#fffefa; --serif:Georgia,"Times New Roman",serif; --sans:"Avenir Next",Avenir,"Segoe UI",sans-serif; }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; background:var(--paper); color:var(--ink); font:15px/1.6 var(--sans); }
+    a { color:var(--green); }
+    .topbar { height:60px; display:flex; align-items:center; justify-content:space-between; padding:0 5vw; border-bottom:1px solid var(--line); }
+    .wordmark { display:flex; align-items:center; gap:11px; color:var(--ink); font-size:13px; font-weight:700; letter-spacing:.02em; text-decoration:none; }
+    .mark { width:27px; height:27px; display:grid; place-items:center; border-radius:50%; background:var(--green); color:white; font:17px var(--serif); }
+    .top-meta { color:var(--muted); font-size:11px; letter-spacing:.08em; text-transform:uppercase; }
+    .layout { display:grid; grid-template-columns:220px minmax(0,1fr); max-width:1500px; margin:0 auto; }
+    aside { padding:32px 22px 50px 5vw; border-right:1px solid var(--line); }
+    .side-label { margin:0 0 11px; color:var(--muted); font-size:10px; font-weight:700; letter-spacing:.13em; text-transform:uppercase; }
+    .nav-list { list-style:none; margin:0 0 25px; padding:0; }
+    .nav-list a { display:block; margin-left:-8px; padding:6px 8px; border-radius:3px; color:#47534a; font-size:12px; text-decoration:none; }
+    .nav-list a:hover,.nav-list a:focus-visible { background:var(--green-soft); outline:none; }
+    .back-link { display:inline-block; margin-top:9px; font-size:12px; font-weight:700; text-decoration:none; }
+    main { min-width:0; padding:0 5vw 65px; }
+    .intro { padding:46px 0 26px; border-bottom:1px solid var(--line); }
+    .eyebrow { margin:0 0 9px; color:var(--coral); font-size:10px; font-weight:700; letter-spacing:.15em; text-transform:uppercase; }
+    h1 { max-width:780px; margin:0; font:500 52px/1.04 var(--serif); }
+    .dek { max-width:720px; margin:14px 0 0; color:#59645b; font-size:15px; }
+    .identity { display:inline-flex; align-items:center; gap:8px; margin-top:16px; padding:5px 9px; border:1px solid var(--line); border-radius:2px; color:#526056; font-size:10px; letter-spacing:.04em; text-transform:uppercase; }
+    .identity b { color:var(--green); }
+    .content { max-width:900px; }
+    .notice { display:grid; grid-template-columns:4px 1fr; gap:13px; margin:23px 0 4px; padding:13px 15px; background:#eee8d7; color:#555648; font-size:12px; }
+    .notice::before { content:""; background:var(--yellow); }
+    .notice strong { color:var(--ink); }
+    .section { padding:29px 0 6px; scroll-margin-top:15px; }
+    .section-head { display:flex; align-items:baseline; gap:12px; margin-bottom:13px; padding-bottom:8px; border-bottom:1px solid var(--line); }
+    h2 { margin:0; font:500 25px/1.18 var(--serif); }
+    .num { color:var(--coral); font:12px var(--serif); }
+    h3 { margin:18px 0 6px; font:500 18px/1.25 var(--serif); }
+    p { margin:8px 0; }
+    .content ul,.content ol { padding-left:22px; }
+    li { margin:6px 0; }
+    .steps { margin:15px 0 0; padding:0; list-style:none; counter-reset:setup; }
+    .steps li { position:relative; min-height:38px; margin:0; padding:0 0 17px 47px; counter-increment:setup; }
+    .steps li::before { content:counter(setup,decimal-leading-zero); position:absolute; top:0; left:0; display:grid; width:31px; height:31px; place-items:center; border:1px solid #c8d2c5; border-radius:50%; color:var(--green); font-size:10px; font-weight:700; }
+    .steps li:not(:last-child)::after { content:""; position:absolute; top:33px; bottom:0; left:15px; border-left:1px solid var(--line); }
+    .steps strong { color:#28352c; }
+    .steps p { margin:4px 0 0; color:#5d685f; font-size:13px; }
+    .steps ul { margin:7px 0 0; color:#5d685f; font-size:13px; }
+    .subgrid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; margin-top:13px; }
+    .subnote { padding:13px 14px; border:1px solid var(--line); border-radius:3px; background:var(--white); }
+    .subnote h3 { margin:0 0 5px; font-size:16px; }
+    .subnote p { margin:0; color:#626d64; font-size:12px; }
+    .linklist { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:7px 16px; margin:14px 0 0; padding:0; list-style:none; }
+    .linklist li { margin:0; }
+    .linklist a { font-size:12px; font-weight:650; text-decoration:none; }
+    .linklist a:hover { text-decoration:underline; text-underline-offset:3px; }
+    .linklist span { display:block; color:var(--muted); font-size:10px; font-weight:400; }
+    .checklist { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px 15px; margin-top:13px; }
+    .check { display:flex; align-items:flex-start; gap:9px; padding:10px; border:1px solid var(--line); border-radius:3px; background:var(--white); color:#4f5b52; font-size:12px; }
+    .check input { flex:0 0 auto; width:15px; height:15px; margin:1px 0 0; accent-color:var(--green); }
+    details { margin:8px 0; border:1px solid var(--line); border-radius:3px; background:var(--white); }
+    summary { padding:11px 13px; color:var(--green); font-size:12px; font-weight:700; cursor:pointer; }
+    details p { margin:0; padding:0 13px 12px; color:#5d685f; font-size:12px; }
+    .footnote { padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:11px; }
+    footer { display:flex; justify-content:space-between; gap:15px; margin-top:38px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:11px; }
+    @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } }
+    @media (max-width:900px) { .layout { grid-template-columns:175px minmax(0,1fr); } aside { padding-left:22px; } main { padding-right:28px; padding-left:28px; } }
+    @media (max-width:650px) { .topbar { padding:0 19px; } .top-meta { max-width:130px; text-align:right; font-size:9px; } .layout { display:block; } aside { padding:9px 19px 0; border-right:0; border-bottom:1px solid var(--line); overflow-x:auto; } aside .side-label { display:none; } .nav-list { display:flex; gap:12px; width:max-content; margin:0; } .nav-list a { margin:0; padding:10px 2px; white-space:nowrap; } .back-link { display:none; } main { padding:0 19px 45px; } .intro { padding:31px 0 20px; } h1 { font-size:40px; } .subgrid,.linklist,.checklist { grid-template-columns:1fr; } h2 { font-size:23px; } }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="wordmark" href="index.html"><span class="mark" aria-hidden="true">f</span><span>FIELDNOTES / APPLE ADMIN</span></a>
+    <div class="top-meta">Setup guide · Apple enrollment</div>
+  </header>
+  <div class="layout">
+    <aside aria-label="Guide navigation">
+      <p class="side-label">Setup path</p>
+      <nav>
+        <ul class="nav-list">
+          <li><a href="#before">Before you start</a></li>
+          <li><a href="#apns">1. APNs</a></li>
+          <li><a href="#ade">2. Connect ADE</a></li>
+          <li><a href="#assign">3. Assign devices</a></li>
+          <li><a href="#apps">4. Apps & Books</a></li>
+          <li><a href="#blueprints">5. Blueprints</a></li>
+          <li><a href="#test">6. Test rollout</a></li>
+          <li><a href="#care">Keep it healthy</a></li>
+          <li><a href="#references">References</a></li>
+        </ul>
+      </nav>
+      <a class="back-link" href="index.html">← Back to all resources</a>
+    </aside>
+    <main>
+      <section class="intro">
+        <div class="content">
+          <p class="eyebrow">Iru Endpoint / Apple Business</p>
+          <h1>From purchase to first login.</h1>
+          <p class="dek">A source-linked setup path for connecting Iru to Apple Business and enrolling organization-owned Macs, iPhones, and iPads with Automated Device Enrollment.</p>
+          <div class="identity"><b>IRU</b><span>formerly Kandji</span><span>·</span><span>current guide reviewed Sep 2026</span></div>
+        </div>
+      </section>
+      <div class="content">
+        <div class="notice"><div><strong>Product names:</strong> Iru is the current name for Kandji. Apple’s current guide calls the business service Apple Business; many existing admin guides and tenants still say Apple Business Manager (ABM). Apple School Manager remains a separate education portal. Menu labels may change, so use Iru’s live documentation alongside this overview.</div></div>
+
+        <section class="section" id="before">
+          <div class="section-head"><span class="num">00</span><h2>Before you start</h2></div>
+          <p>Apple Business is the organization and enrollment portal; Iru Endpoint is the MDM that applies settings, apps, and security controls. Plan these prerequisites first:</p>
+          <ul>
+            <li>An active Apple Business organization, with an administrator able to manage device management services and devices.</li>
+            <li>An Iru Endpoint tenant and an administrator account. Iru’s public Getting Started guide notes that trial tenants have a 10-device limit.</li>
+            <li>Organization-controlled Apple Account access for creating and renewing the APNs certificate. Keep the account and renewal owner documented.</li>
+            <li>Devices already assigned to the organization by Apple or an authorized reseller. For eligible existing devices, review Apple Configurator options.</li>
+            <li>A small test group, wireless/network access during Setup Assistant, and a decision about identity, apps, security controls, and which setup screens users should see.</li>
+          </ul>
+        </section>
+
+        <section class="section" id="apns">
+          <div class="section-head"><span class="num">01</span><h2>Configure APNs in Iru</h2></div>
+          <p>Apple Push Notification service (APNs) lets the MDM signal managed devices to check in. It is a separate setup from the Apple Business ADE server token.</p>
+          <ol class="steps">
+            <li><strong>Open Iru Endpoint integrations.</strong><p>In Iru, open the Account Menu → Integrations → Apple → APNs setup.</p></li>
+            <li><strong>Create a new certificate for Iru.</strong><p>Follow Iru’s certificate wizard using an organization-controlled Apple Account. Iru’s current instructions say to create a new APNs certificate specifically for Iru Endpoint rather than reuse an existing MDM certificate.</p></li>
+            <li><strong>Record the owner and expiry date.</strong><p>APNs certificates require annual renewal. Retain access to the Apple Account used; renew in Iru before expiry and follow the same account and vendor workflow.</p></li>
+            <li><strong>Check network access.</strong><p>Allow required Apple device-management and APNs traffic. Apple documents client APNs traffic on TCP 5223, with TCP 443 fallback, and MDM-provider APNs traffic on TCP 443 or 2197. Confirm Iru’s current network requirements for your tenant.</p></li>
+          </ol>
+        </section>
+
+        <section class="section" id="ade">
+          <div class="section-head"><span class="num">02</span><h2>Connect Apple Business to Iru ADE</h2></div>
+          <p>This is the key token exchange. Start the setup in Iru; it provides a PEM public key. Apple Business uses that key to create an MDM service and returns a signed service token as a <code>.p7m</code> file.</p>
+          <ol class="steps">
+            <li><strong>Start the ADE wizard in Iru.</strong><p>Open Account Menu → Integrations → Apple → Automated Device Enrollment → Set up. Save the PEM public key when Iru provides it.</p></li>
+            <li><strong>Add an MDM service in Apple Business.</strong><p>Sign in to <a href="https://business.apple.com/" target="_blank" rel="noreferrer">business.apple.com</a> with an account that can manage device services. Open Devices → Management → Add device management service. Give it a clear name such as “Iru Endpoint.”</p></li>
+            <li><strong>Upload Iru’s PEM file.</strong><p>Upload the PEM from the Iru wizard and continue. If Apple offers a “release devices” permission, grant it only if your operational policy requires Iru to release organization devices.</p></li>
+            <li><strong>Download Apple’s service token.</strong><p>Download the MDM service token from Apple Business. Keep the <code>.p7m</code> file secure and recognizable; it authorizes the link between this Apple Business MDM server and Iru.</p></li>
+            <li><strong>Return to Iru and upload the token.</strong><p>Complete the Iru wizard by uploading the Apple-signed <code>.p7m</code> token. Finish the setup and confirm the integration status in Iru.</p></li>
+            <li><strong>Keep renewal paired.</strong><p>When renewing, use Iru’s ADE renewal workflow and update the token in the connected tenant. Do not replace a token in Apple Business and leave Iru holding the old token.</p></li>
+          </ol>
+          <div class="notice"><div><strong>Keep the files distinct:</strong> the Iru-provided PEM is uploaded to Apple Business; the Apple-downloaded <code>.p7m</code> token is uploaded to Iru. Neither is the APNs certificate or the Apps and Books content token.</div></div>
+        </section>
+
+        <section class="section" id="assign">
+          <div class="section-head"><span class="num">03</span><h2>Assign devices to Iru</h2></div>
+          <ol class="steps">
+            <li><strong>Confirm the serial numbers exist in Apple Business.</strong><p>New purchases from Apple or participating authorized resellers are typically added through the reseller assignment process. If a device is missing, ask the reseller to assign it; Apple Configurator may be an option for eligible devices.</p></li>
+            <li><strong>Assign the MDM server.</strong><p>In Apple Business, select the devices, choose Assign to Mobile Device Management (MDM) Server, select Iru Endpoint, and confirm. Default server assignment rules can reduce manual assignment for future purchases.</p></li>
+            <li><strong>Sync and select a Blueprint in Iru.</strong><p>In Iru Endpoint, open Enrollment → Automated Device Enrollment. Fetch devices if needed, verify they appear as Awaiting Enrollment, then assign the intended Blueprint or configure Blueprint Routing.</p></li>
+            <li><strong>Verify ADE settings.</strong><p>Check the ADE Library Item/profile associated with the Blueprint: authentication, Setup Assistant panes, enrollment behavior, and any required security bootstrap settings. Use only options supported for your device and OS version.</p></li>
+          </ol>
+          <p>Devices assigned before activation can enroll during Setup Assistant. Apple documents that ADE is intended for organization-owned devices and can prevent the user from removing management when configured accordingly.</p>
+        </section>
+
+        <section class="section" id="apps">
+          <div class="section-head"><span class="num">04</span><h2>Connect Apps and Books</h2></div>
+          <p>Apps and Books (formerly VPP) is a separate Apple integration and token. Use it to buy or acquire licenses and assign apps to users or devices from Iru.</p>
+          <ol class="steps">
+            <li><strong>Finish APNs first.</strong><p>Iru’s setup sequence requires APNs before Apps and Books.</p></li>
+            <li><strong>Choose the right Apple Business organization or organizational unit.</strong><p>Use a dedicated token for the Iru tenant. Iru warns against sharing one Apps and Books token across multiple MDM servers.</p></li>
+            <li><strong>Start Apps and Books setup in Iru.</strong><p>Account Menu → Integrations → Apple → Apps and Books. Follow the connection flow to sign in to Apple Business and authorize the integration.</p></li>
+            <li><strong>Acquire licenses and assign apps.</strong><p>In Apple Business, acquire the needed app licenses. In Iru, add the apps to the Library and assign them through the intended Blueprint. Test installation and license behavior on a device.</p></li>
+          </ol>
+        </section>
+
+        <section class="section" id="blueprints">
+          <div class="section-head"><span class="num">05</span><h2>Build a Blueprint before rollout</h2></div>
+          <p>Blueprints define which Library Items apply to devices. Start small; separate baseline controls from department-specific apps and settings.</p>
+          <ol class="steps">
+            <li><strong>Create a test Blueprint.</strong><p>In Iru Endpoint, open Blueprints → Add Blueprint. Start from scratch or a template, then name it for its role and scope.</p></li>
+            <li><strong>Add Library Items to its Assignment Map.</strong><p>Include only the baseline settings and essential apps needed for your test. Use conditional logic or Blueprint Routing where you need different configurations by user, device, or group.</p></li>
+            <li><strong>Review ADE Library Item settings.</strong><p>Configure user authentication and Setup Assistant behavior for enrollment. Avoid skipping panes users still need for accessibility, account setup, or organization policy.</p></li>
+            <li><strong>Set enrollment authentication deliberately.</strong><p>Choose whether the Mac should be assigned to a user and whether SSO/authentication is required. Confirm this matches the account-creation and identity workflow you actually support.</p></li>
+          </ol>
+        </section>
+
+        <section class="section" id="test">
+          <div class="section-head"><span class="num">06</span><h2>Test the first-run experience</h2></div>
+          <div class="checklist" aria-label="Deployment verification checklist">
+            <label class="check"><input type="checkbox"> Test device appears in Apple Business and is assigned to Iru Endpoint.</label>
+            <label class="check"><input type="checkbox"> Iru shows the device as Awaiting Enrollment before activation.</label>
+            <label class="check"><input type="checkbox"> The correct Blueprint and ADE enrollment settings apply.</label>
+            <label class="check"><input type="checkbox"> Setup Assistant screens and user authentication match the intended flow.</label>
+            <label class="check"><input type="checkbox"> Required apps install and device settings reach the device.</label>
+            <label class="check"><input type="checkbox"> FileVault and recovery-key escrow are verified when required for Macs.</label>
+            <label class="check"><input type="checkbox"> Iru Activity and the device record show successful enrollment and configuration.</label>
+            <label class="check"><input type="checkbox"> A real end user can complete setup without helpdesk-only credentials.</label>
+          </div>
+          <p>Test a clean or properly erased device that has been assigned in Apple Business. Keep one known-good pilot device and document the expected setup screens and completion criteria before expanding to a larger group.</p>
+        </section>
+
+        <section class="section" id="care">
+          <div class="section-head"><span class="num">07</span><h2>Renewal and troubleshooting</h2></div>
+          <div class="subgrid">
+            <div class="subnote"><h3>APNs</h3><p>Renew annually through Iru’s integration workflow using the same organization-controlled Apple Account. Treat expiry as an incident risk; set a calendar reminder as well as relying on email notifications.</p></div>
+            <div class="subnote"><h3>ADE token</h3><p>Renew from Iru’s Apple integration. Confirm the new token is accepted and devices can sync after renewal. Follow Iru’s current process if the tenant has multiple ADE tokens.</p></div>
+            <div class="subnote"><h3>Apps and Books</h3><p>Keep the Iru content token current and associated with the intended organization/unit. Check license availability and app assignment if an app does not install.</p></div>
+            <div class="subnote"><h3>New devices missing</h3><p>Check reseller assignment and serial-number visibility in Apple Business. For eligible existing hardware, use Apple’s Configurator guidance; enrollment method and provisional-period behavior vary by device type.</p></div>
+          </div>
+          <details><summary>Device is not appearing as Awaiting Enrollment</summary><p>Confirm the serial number is in Apple Business, the device is assigned to Iru Endpoint (not just present in the portal), the ADE token is valid, and Iru has fetched devices. Check the Iru enrollment activity and token status.</p></details>
+          <details><summary>Device starts setup but does not enroll</summary><p>Verify the device was assigned before activation, APNs and network connectivity work, the Iru enrollment profile/ADE Library Item is assigned through the Blueprint, and the device can reach the required Apple and Iru services. Use Apple’s network requirements and Iru’s troubleshooting docs.</p></details>
+          <details><summary>Blueprint or app did not apply</summary><p>Check the enrollment-to-Blueprint assignment, Assignment Map conditions, app license availability, and Iru device activity. Test the exact same Blueprint and app assignment with one pilot device before broad rollout.</p></details>
+        </section>
+
+        <section class="section" id="references">
+          <div class="section-head"><span class="num">REF</span><h2>Public references</h2></div>
+          <p>Use vendor documentation as the source of truth for changing console labels and tenant-specific requirements. Iru support access can depend on your account.</p>
+          <ul class="linklist">
+            <li><a href="https://docs.iru.com/en/endpoint/getting-started/getting-started" target="_blank" rel="noreferrer">Iru Endpoint Getting Started<span>Official setup sequence and trial notes</span></a></li>
+            <li><a href="https://docs.iru.com/en/endpoint/getting-started/platform-setup/apple-setup" target="_blank" rel="noreferrer">Iru Apple Setup<span>APNs, ADE, and Apps and Books steps</span></a></li>
+            <li><a href="https://docs.iru.com/en/endpoint/getting-started/enrollment/apple-enrollment" target="_blank" rel="noreferrer">Iru Apple Enrollment<span>ADE prerequisites, assignment, and testing</span></a></li>
+            <li><a href="https://docs.iru.com/en/endpoint/getting-started/blueprints-and-library/configuring-blueprints" target="_blank" rel="noreferrer">Iru Configuring Blueprints<span>Create Blueprints and assign Library Items</span></a></li>
+            <li><a href="https://docs.iru.com/en/endpoint/enrollment/blueprint-routing" target="_blank" rel="noreferrer">Iru Blueprint Routing<span>Route enrollment to Blueprints</span></a></li>
+            <li><a href="https://www.iru.com/endpoint/apple-business-complete-guide" target="_blank" rel="noreferrer">Iru Apple Business guide<span>Public overview from Iru</span></a></li>
+            <li><a href="https://support.apple.com/guide/apple-business-manager/welcome/web" target="_blank" rel="noreferrer">Apple Business user guide<span>Apple’s portal reference; includes ABM naming transition</span></a></li>
+            <li><a href="https://support.apple.com/guide/deployment/automated-device-enrollment-dep73069dd57/web" target="_blank" rel="noreferrer">Apple Automated Device Enrollment<span>Ownership, enrollment, supervision, and setup choices</span></a></li>
+            <li><a href="https://support.apple.com/guide/deployment/enrollment-methods-for-apple-devices-dep08f54fcf6/web" target="_blank" rel="noreferrer">Apple enrollment methods & privacy<span>Compare organization-owned and user enrollment</span></a></li>
+            <li><a href="https://support.apple.com/guide/deployment/configure-devices-to-work-with-apns-dep2de55389a/web" target="_blank" rel="noreferrer">Apple APNs requirements<span>Certificate and network connection guidance</span></a></li>
+            <li><a href="https://support.apple.com/guide/deployment/configure-your-network-for-device-management-dep2bcde692e/web" target="_blank" rel="noreferrer">Apple network requirements<span>MDM reachability, TLS, and firewall ports</span></a></li>
+            <li><a href="https://support.apple.com/guide/deployment/add-apple-devices-school-manager-business-depb5ae24c4a/web" target="_blank" rel="noreferrer">Add devices with Apple Configurator<span>Options for eligible devices not assigned by a reseller</span></a></li>
+          </ul>
+        </section>
+        <p class="footnote">This is a learning checklist, not tenant-specific implementation advice. Verify current Iru and Apple documentation before changing production enrollment, certificates, or device assignments.</p>
+        <footer><span>Fieldnotes / Iru + Apple Business</span><a href="index.html">Return to the study index ↑</a></footer>
+      </div>
+    </main>
+  </div>
+</body>
+</html>
