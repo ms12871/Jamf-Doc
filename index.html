@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f1e9">
+  <meta name="description" content="A curated field guide to Jamf Pro, Apple fleet management, MDM, Apple Business, and Mac administration.">
+  <title>Fieldnotes | Apple fleet management</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #f4f1e9;
+      --ink: #202722;
+      --muted: #68736a;
+      --line: #d9ddd3;
+      --green: #315d45;
+      --green-soft: #e1eadd;
+      --coral: #b7513b;
+      --yellow: #e7c86a;
+      --white: #fffefa;
+      --serif: Georgia, "Times New Roman", serif;
+      --sans: "Avenir Next", Avenir, "Segoe UI", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; background: var(--paper); color: var(--ink); font: 15px/1.55 var(--sans); }
+    a { color: inherit; }
+    button, input { font: inherit; }
+    .shell { min-height: 100vh; }
+    .topbar { height: 60px; display: flex; align-items: center; justify-content: space-between; padding: 0 5vw; border-bottom: 1px solid var(--line); }
+    .wordmark { display: flex; gap: 11px; align-items: center; font-weight: 700; letter-spacing: .02em; }
+    .mark { width: 27px; height: 27px; display: grid; place-items: center; border-radius: 50%; background: var(--green); color: white; font: 17px var(--serif); }
+    .top-meta { color: var(--muted); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; }
+    .layout { display: grid; grid-template-columns: 220px minmax(0, 1fr); max-width: 1500px; margin: 0 auto; }
+    aside { border-right: 1px solid var(--line); padding: 35px 22px 50px 5vw; }
+    .side-label { color: var(--muted); font-size: 10px; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; margin: 0 0 12px; }
+    .nav-list { list-style: none; margin: 0 0 31px; padding: 0; }
+    .nav-list a { display: block; padding: 7px 9px; margin-left: -9px; text-decoration: none; color: #47534a; font-size: 13px; border-radius: 3px; }
+    .nav-list a:hover, .nav-list a:focus-visible { color: var(--green); background: var(--green-soft); outline: none; }
+    .aside-note { border-top: 1px solid var(--line); padding-top: 15px; color: var(--muted); font: 13px/1.5 var(--serif); }
+    main { min-width: 0; padding: 0 5vw 72px; }
+    .intro { display: grid; grid-template-columns: minmax(0, 1fr) 190px; gap: 32px; align-items: end; padding: 49px 0 31px; border-bottom: 1px solid var(--line); }
+    .eyebrow { margin: 0 0 9px; color: var(--coral); font-size: 10px; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; }
+    h1 { margin: 0; max-width: 730px; font: 500 57px/1.04 var(--serif); letter-spacing: 0; }
+    .intro-copy { max-width: 640px; margin: 15px 0 0; color: #59645b; font-size: 15px; }
+    .index-stamp { justify-self: end; align-self: center; width: 160px; height: 116px; display: flex; flex-direction: column; justify-content: space-between; padding: 14px; background-color: var(--green); color: #f7f4eb; background-image: repeating-linear-gradient(135deg, transparent 0 9px, #ffffff14 9px 10px); transform: rotate(2deg); }
+    .index-stamp span:first-child { font: 13px var(--serif); }
+    .index-stamp strong { font-size: 31px; line-height: 1; font-weight: 500; }
+    .index-stamp span:last-child { font-size: 9px; letter-spacing: .12em; text-transform: uppercase; }
+    .controls { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 20px 0 17px; }
+    .search-wrap { position: relative; width: min(100%, 390px); }
+    .search-wrap span { position: absolute; top: 9px; left: 12px; color: var(--muted); font-size: 17px; }
+    #search { width: 100%; height: 40px; padding: 0 13px 0 37px; border: 1px solid #cfd5ca; border-radius: 3px; outline: none; background: var(--white); color: var(--ink); }
+    #search:focus { border-color: var(--green); box-shadow: 0 0 0 2px #315d4520; }
+    #result-count { color: var(--muted); font-size: 12px; white-space: nowrap; }
+    .filter-row { display: flex; flex-wrap: wrap; gap: 7px; padding-bottom: 28px; }
+    .filter { border: 1px solid #cfd5ca; border-radius: 99px; padding: 6px 12px; color: #4e5b51; background: transparent; font-size: 11px; cursor: pointer; }
+    .filter:hover, .filter[aria-pressed="true"] { border-color: var(--green); background: var(--green); color: white; }
+    .section { padding: 27px 0 6px; scroll-margin-top: 20px; }
+    .section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 13px; border-bottom: 1px solid var(--line); padding-bottom: 9px; }
+    .section-title { margin: 0; font: 23px/1.15 var(--serif); font-weight: 500; }
+    .section-number { color: var(--coral); font: 12px var(--serif); }
+    .cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+    .resource { min-width: 0; min-height: 158px; display: flex; flex-direction: column; padding: 15px 15px 13px; border: 1px solid var(--line); border-radius: 3px; background: var(--white); transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease; animation: rise .4s both; }
+    .resource:hover { transform: translateY(-2px); border-color: #aeb9ab; box-shadow: 0 5px 15px #2834270b; }
+    .resource[hidden], .section[hidden] { display: none; }
+    .resource-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+    .source { color: var(--green); font-size: 9px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+    .kind { color: var(--muted); font-size: 10px; }
+    .resource h3 { margin: 0; font: 18px/1.2 var(--serif); font-weight: 500; }
+    .resource p { margin: 7px 0 12px; color: #667067; font-size: 12px; line-height: 1.45; }
+    .resource a { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: auto; color: var(--green); font-size: 11px; font-weight: 700; text-decoration: none; }
+    .resource a:hover { text-decoration: underline; text-underline-offset: 3px; }
+    .notice { display: grid; grid-template-columns: 4px 1fr; gap: 13px; margin: 24px 0 2px; padding: 13px 15px; background: #eee8d7; color: #555648; font-size: 12px; }
+    .notice::before { content: ""; background: var(--yellow); }
+    .notice strong { color: var(--ink); }
+    footer { display: flex; justify-content: space-between; gap: 18px; margin-top: 43px; padding-top: 15px; border-top: 1px solid var(--line); color: var(--muted); font-size: 11px; }
+    footer a { color: var(--green); }
+    .empty-state { display: none; padding: 25px 0; color: var(--muted); font: 18px var(--serif); }
+    .empty-state.visible { display: block; }
+    @keyframes rise { from { opacity: 0; transform: translateY(7px); } to { opacity: 1; transform: translateY(0); } }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; } }
+    @media (max-width: 920px) { .layout { grid-template-columns: 175px minmax(0, 1fr); } aside { padding-left: 22px; } main { padding-right: 28px; padding-left: 28px; } .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 650px) { .topbar { padding: 0 19px; } .top-meta { font-size: 9px; } .layout { display: block; } aside { padding: 10px 19px 0; border-right: 0; border-bottom: 1px solid var(--line); overflow-x: auto; } aside .side-label, aside .aside-note { display: none; } .nav-list { display: flex; gap: 13px; width: max-content; margin: 0; } .nav-list a { margin: 0; padding: 10px 2px; white-space: nowrap; font-size: 12px; } main { padding: 0 19px 50px; } .intro { grid-template-columns: minmax(0, 1fr); padding: 32px 0 22px; } .index-stamp { display: none; } h1 { font-size: 43px; } .controls { align-items: flex-start; flex-direction: column; gap: 9px; } .cards { grid-template-columns: 1fr; } .resource { min-height: 140px; } footer { flex-direction: column; } }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <div class="wordmark"><span class="mark" aria-hidden="true">f</span><span>FIELDNOTES <span style="font-weight:400;color:#68736a">/ APPLE ADMIN</span></span></div>
+      <div class="top-meta">A working study index · September 2026</div>
+    </header>
+    <div class="layout">
+      <aside aria-label="Page navigation">
+        <p class="side-label">On this page</p>
+        <nav>
+          <ul class="nav-list">
+            <li><a href="#start">Start here</a></li>
+            <li><a href="#jamf">Jamf Pro</a></li>
+            <li><a href="#apple">Apple deployment</a></li>
+            <li><a href="#fleet">Mac fleet</a></li>
+            <li><a href="#practice">Tools & community</a></li>
+          </ul>
+        </nav>
+        <p class="aside-note">Learn the Apple platform first. Then map each service, enrollment choice, and management workflow onto your fleet.</p>
+      </aside>
+      <main>
+        <section class="intro" aria-labelledby="page-title">
+          <div>
+            <p class="eyebrow">The Apple admin's field guide</p>
+            <h1 id="page-title">Manage the fleet.<br>Understand the system.</h1>
+            <p class="intro-copy">A curated route through Jamf Pro, Apple device management, business enrollment, security, and the tools that make a Mac fleet run.</p>
+          </div>
+          <div class="index-stamp" aria-label="Four learning tracks">
+            <span>LEARNING INDEX</span><strong>04</strong><span>Tracks · curated links</span>
+          </div>
+        </section>
+
+        <div class="controls">
+          <label class="search-wrap"><span aria-hidden="true">⌕</span><input id="search" type="search" placeholder="Search topics, tools, or sources" autocomplete="off" aria-label="Search resources"></label>
+          <div id="result-count" aria-live="polite"></div>
+        </div>
+        <div class="filter-row" role="group" aria-label="Filter resources">
+          <button class="filter" type="button" data-filter="all" aria-pressed="true">All resources</button>
+          <button class="filter" type="button" data-filter="learning" aria-pressed="false">Courses</button>
+          <button class="filter" type="button" data-filter="docs" aria-pressed="false">Documentation</button>
+          <button class="filter" type="button" data-filter="tools" aria-pressed="false">Tools</button>
+          <button class="filter" type="button" data-filter="community" aria-pressed="false">Community</button>
+        </div>
+
+        <section class="section" id="start">
+          <div class="section-head"><h2 class="section-title">Start here</h2><span class="section-number">01 / FOUNDATIONS</span></div>
+          <div class="cards">
+            <article class="resource" data-kind="learning" data-search="jamf 100 course beginner foundations mac administration"><div class="resource-top"><span class="source">Jamf Learning Hub</span><span class="kind">Course</span></div><h3>Jamf 100 Course</h3><p>Begin with macOS fundamentals, device management concepts, and the Jamf Pro vocabulary.</p><a href="https://learn.jamf.com/r/share/jamf-100-course-current/Welcome" target="_blank" rel="noreferrer">Open course <span>↗</span></a></article>
+            <article class="resource" data-kind="learning" data-search="jamf training catalog certifications associate exam jamf pro"><div class="resource-top"><span class="source">Jamf Training</span><span class="kind">Courses · credentials</span></div><h3>Training & certifications</h3><p>Find current courses and certification paths. Training portal access may require a Jamf ID.</p><a href="https://training.jamf.com/" target="_blank" rel="noreferrer">Browse training <span>↗</span></a></article>
+            <article class="resource" data-kind="docs" data-search="apple platform deployment guide official device management"><div class="resource-top"><span class="source">Apple Support</span><span class="kind">Reference guide</span></div><h3>Apple Platform Deployment</h3><p>The authoritative map for planning, enrolling, configuring, securing, and updating Apple devices.</p><a href="https://support.apple.com/guide/deployment/welcome/web" target="_blank" rel="noreferrer">Read the guide <span>↗</span></a></article>
+          </div>
+        </section>
+
+        <section class="section" id="jamf">
+          <div class="section-head"><h2 class="section-title">Jamf Pro, end to end</h2><span class="section-number">02 / PLATFORM</span></div>
+          <div class="cards">
+            <article class="resource" data-kind="docs" data-search="jamf pro documentation administrator guide product docs"><div class="resource-top"><span class="source">Jamf Learning Hub</span><span class="kind">Documentation</span></div><h3>Jamf Pro documentation</h3><p>Administration guidance for inventory, policies, configuration profiles, apps, groups, and management.</p><a href="https://learn.jamf.com/" target="_blank" rel="noreferrer">Open Learning Hub <span>↗</span></a></article>
+            <article class="resource" data-kind="docs" data-search="jamf pro api rest api reference swagger local api doc automation"><div class="resource-top"><span class="source">Jamf Developer</span><span class="kind">API reference</span></div><h3>Jamf Pro API</h3><p>REST API overview, authentication, endpoint references, and examples for safe automation.</p><a href="https://developer.jamf.com/jamf-pro/docs" target="_blank" rel="noreferrer">Read API docs <span>↗</span></a></article>
+            <article class="resource" data-kind="tools" data-search="jamf api try it out instance api doc endpoint test rest client"><div class="resource-top"><span class="source">Your Jamf Pro instance</span><span class="kind">Interactive tool</span></div><h3>Instance API explorer</h3><p>Inspect the API version and try authorized requests against your own server. Replace the example host.</p><a href="https://your-jamf-pro.example.com/api/doc" target="_blank" rel="noreferrer">Open /api/doc <span>↗</span></a></article>
+            <article class="resource" data-kind="community" data-search="jamf nation community forum questions scripts workflows"><div class="resource-top"><span class="source">Jamf</span><span class="kind">Community</span></div><h3>Jamf Nation</h3><p>Search practical admin discussions, troubleshooting threads, user groups, and product updates.</p><a href="https://community.jamf.com/" target="_blank" rel="noreferrer">Visit community <span>↗</span></a></article>
+            <article class="resource" data-kind="tools" data-search="jamf marketplace integrations configurations deployment guides"><div class="resource-top"><span class="source">Jamf</span><span class="kind">Directory</span></div><h3>Jamf Marketplace</h3><p>Discover integrations, configurations, and deployment guides for the Jamf ecosystem.</p><a href="https://marketplace.jamf.com/" target="_blank" rel="noreferrer">Explore marketplace <span>↗</span></a></article>
+            <article class="resource" data-kind="learning" data-search="jamf blog events user conference junuc talks"><div class="resource-top"><span class="source">Jamf</span><span class="kind">Articles · events</span></div><h3>Jamf blog & JNUC</h3><p>Use conference sessions and product articles for real deployment patterns and new-feature context.</p><a href="https://www.jamf.com/blog/" target="_blank" rel="noreferrer">Browse articles <span>↗</span></a></article>
+          </div>
+        </section>
+
+        <section class="section" id="apple">
+          <div class="section-head"><h2 class="section-title">Apple deployment & MDM</h2><span class="section-number">03 / ENROLLMENT · PROTOCOL</span></div>
+          <div class="cards">
+            <article class="resource" data-kind="docs" data-search="apple device management developer documentation mdm protocol declarative management"><div class="resource-top"><span class="source">Apple Developer</span><span class="kind">Technical reference</span></div><h3>Device Management</h3><p>MDM commands and queries, check-in, enrollment, declarations, status items, and payload keys.</p><a href="https://developer.apple.com/documentation/devicemanagement" target="_blank" rel="noreferrer">Explore the docs <span>↗</span></a></article>
+            <article class="resource" data-kind="docs" data-search="apple business manager ABM Apple Business organization devices licenses apps accounts guide"><div class="resource-top"><span class="source">Apple Support</span><span class="kind">Organization setup</span></div><h3>Apple Business Manager guide</h3><p>Organization accounts, device assignment, content, and connections to a device management service.</p><a href="https://support.apple.com/guide/apple-business-manager/welcome/web" target="_blank" rel="noreferrer">Open user guide <span>↗</span></a></article>
+            <article class="resource" data-kind="docs" data-search="automated device enrollment ADE DEP zero touch setup assistant supervised prevent unenrollment"><div class="resource-top"><span class="source">Apple Platform Deployment</span><span class="kind">Enrollment</span></div><h3>Automated Device Enrollment</h3><p>Understand organization-owned enrollment, Setup Assistant options, supervision, and unenrollment controls.</p><a href="https://support.apple.com/guide/deployment/automated-device-enrollment-dep73069dd57/web" target="_blank" rel="noreferrer">Study ADE <span>↗</span></a></article>
+            <article class="resource" data-kind="docs" data-search="apple enrollment methods user enrollment device enrollment BYOD privacy"><div class="resource-top"><span class="source">Apple Platform Deployment</span><span class="kind">Enrollment</span></div><h3>Enrollment methods & privacy</h3><p>Compare Automated Device Enrollment, Device Enrollment, and account-driven User Enrollment.</p><a href="https://support.apple.com/guide/deployment/enrollment-methods-for-apple-devices-dep08f54fcf6/web" target="_blank" rel="noreferrer">Compare methods <span>↗</span></a></article>
+            <article class="resource" data-kind="docs" data-search="apple declarative device management DDM declarations status reports MDM"><div class="resource-top"><span class="source">Apple Developer</span><span class="kind">Management model</span></div><h3>Declarative Device Management</h3><p>Learn how declarations and status reports let devices apply and report managed state proactively.</p><a href="https://developer.apple.com/documentation/devicemanagement/devicemanagement-declarations" target="_blank" rel="noreferrer">Read about declarations <span>↗</span></a></article>
+            <article class="resource" data-kind="docs" data-search="apple push notification service APNs MDM network requirements enterprise"><div class="resource-top"><span class="source">Apple Support</span><span class="kind">Networking</span></div><h3>Enterprise network requirements</h3><p>Check Apple service destinations and connectivity prerequisites before diagnosing enrollment or push.</p><a href="https://support.apple.com/101555" target="_blank" rel="noreferrer">Review requirements <span>↗</span></a></article>
+          </div>
+        </section>
+
+        <section class="section" id="fleet">
+          <div class="section-head"><h2 class="section-title">Operating a Mac fleet</h2><span class="section-number">04 / SECURITY · LIFECYCLE</span></div>
+          <div class="cards">
+            <article class="resource" data-kind="docs" data-search="mac security platform security filevault gatekeeper bootstrap token apple"><div class="resource-top"><span class="source">Apple Support</span><span class="kind">Security guide</span></div><h3>Apple Platform Security</h3><p>Ground security decisions in Apple’s platform protections, encryption, secure boot, and identity model.</p><a href="https://support.apple.com/guide/security/welcome/web" target="_blank" rel="noreferrer">Read security guide <span>↗</span></a></article>
+            <article class="resource" data-kind="docs" data-search="macos software updates deferrals enforcement declarative update management"><div class="resource-top"><span class="source">Apple Platform Deployment</span><span class="kind">Lifecycle</span></div><h3>Software update management</h3><p>Review update types, enforcement, deferrals, test programs, and declarative update workflows.</p><a href="https://support.apple.com/guide/deployment/about-software-updates-depc4c80847a/web" target="_blank" rel="noreferrer">Plan updates <span>↗</span></a></article>
+            <article class="resource" data-kind="tools" data-search="autopkg mac software packaging recipes distribution jamf munki"><div class="resource-top"><span class="source">Open source · GitHub</span><span class="kind">Packaging</span></div><h3>AutoPkg</h3><p>Automate repeatable Mac software packaging workflows and research community-maintained recipes carefully.</p><a href="https://github.com/autopkg/autopkg" target="_blank" rel="noreferrer">View project <span>↗</span></a></article>
+            <article class="resource" data-kind="tools" data-search="nudge macos update compliance deadline user deferrals macadmins"><div class="resource-top"><span class="source">Open source · Mac Admins</span><span class="kind">Update workflow</span></div><h3>Nudge</h3><p>Explore a configurable macOS update prompting tool; assess current project guidance before deployment.</p><a href="https://github.com/macadmins/nudge" target="_blank" rel="noreferrer">View project <span>↗</span></a></article>
+            <article class="resource" data-kind="tools" data-search="SOFA macadmins software update feed security information macOS"><div class="resource-top"><span class="source">Mac Admins</span><span class="kind">Update intelligence</span></div><h3>SOFA</h3><p>Simple Organized Feed for Apple software updates, useful for checking release and security details.</p><a href="https://sofa.macadmins.io/" target="_blank" rel="noreferrer">Open SOFA <span>↗</span></a></article>
+            <article class="resource" data-kind="community" data-search="macadmins wiki community slack resources mac management"><div class="resource-top"><span class="source">Mac Admins</span><span class="kind">Community · references</span></div><h3>Mac Admins resources</h3><p>Find community-curated documentation, discussion spaces, and tools for Apple fleet administrators.</p><a href="https://www.macadmins.org/" target="_blank" rel="noreferrer">Browse resources <span>↗</span></a></article>
+          </div>
+        </section>
+
+        <section class="section" id="practice">
+          <div class="section-head"><h2 class="section-title">Practice & keep learning</h2><span class="section-number">FIELD KIT</span></div>
+          <div class="cards">
+            <article class="resource" data-kind="tools" data-search="jamf pro API client rest extension vscode REST Client humao"><div class="resource-top"><span class="source">VS Code extension</span><span class="kind">API testing</span></div><h3>REST Client</h3><p>Send and inspect HTTP requests to a Jamf Pro test instance from request files inside VS Code.</p><a href="https://marketplace.visualstudio.com/items?itemName=humao.rest-client" target="_blank" rel="noreferrer">View extension <span>↗</span></a></article>
+            <article class="resource" data-kind="tools" data-search="yaml extension vscode yaml profiles configuration data validation"><div class="resource-top"><span class="source">VS Code extension</span><span class="kind">Configuration</span></div><h3>YAML</h3><p>Language support and validation for YAML-based configuration and automation files.</p><a href="https://marketplace.visualstudio.com/items?itemName=redhat.vscode-yaml" target="_blank" rel="noreferrer">View extension <span>↗</span></a></article>
+            <article class="resource" data-kind="tools" data-search="markdown extension vscode documentation markdownlint"><div class="resource-top"><span class="source">VS Code extension</span><span class="kind">Documentation</span></div><h3>Markdown All in One</h3><p>Convenient editing, navigation, and preview features for maintaining admin notes and runbooks.</p><a href="https://marketplace.visualstudio.com/items?itemName=yzhang.markdown-all-in-one" target="_blank" rel="noreferrer">View extension <span>↗</span></a></article>
+          </div>
+          <div class="notice"><div><strong>Apple Business naming:</strong> Apple’s current 2026 documentation says Apple Business combines capabilities previously associated with Apple Business Manager, Apple Business Essentials, and Apple Business Connect. Many organizations and third-party docs still say “ABM.” Check your region, account, and current Apple guidance when following setup steps.</div></div>
+        </section>
+        <p class="empty-state" id="empty-state">No matches. Try a broader search or choose “All resources.”</p>
+        <footer><span>References link to their publishers; availability and product details can change.</span><span>Built as a local study index · <a href="#start">Back to top ↑</a></span></footer>
+      </main>
+    </div>
+  </div>
+  <script>
+    const search = document.querySelector("#search");
+    const cards = [...document.querySelectorAll(".resource")];
+    const sections = [...document.querySelectorAll(".section")];
+    const filters = [...document.querySelectorAll(".filter")];
+    const count = document.querySelector("#result-count");
+    const empty = document.querySelector("#empty-state");
+    let activeFilter = "all";
+
+    function updateResults() {
+      const query = search.value.trim().toLowerCase();
+      let visible = 0;
+      for (const card of cards) {
+        const matchesText = `${card.innerText} ${card.dataset.search}`.toLowerCase().includes(query);
+        const matchesFilter = activeFilter === "all" || card.dataset.kind === activeFilter;
+        card.hidden = !(matchesText && matchesFilter);
+        if (!card.hidden) visible++;
+      }
+      for (const section of sections) {
+        section.hidden = !section.querySelector(".resource:not([hidden])");
+      }
+      count.textContent = `${visible} ${visible === 1 ? "resource" : "resources"}`;
+      empty.classList.toggle("visible", visible === 0);
+    }
+
+    search.addEventListener("input", updateResults);
+    for (const button of filters) {
+      button.addEventListener("click", () => {
+        activeFilter = button.dataset.filter;
+        for (const item of filters) item.setAttribute("aria-pressed", String(item === button));
+        updateResults();
+      });
+    }
+    updateResults();
+  </script>
+</body>
+</html>
