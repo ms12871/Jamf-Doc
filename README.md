@@ -9,6 +9,10 @@ A standalone study hub for learning Jamf Pro and managing Apple device fleets. I
 - Mac fleet security, software updates, packaging, and update workflows
 - Community resources and useful VS Code extensions
 
+## Public URL
+
+https://ms12871.github.io/Jamf-Doc/
+
 ## Open the page
 
 Open [`index.html`](index.html) directly in a browser. The page has no build step or external dependencies. Use the search field and category filters to find resources. Links open the reference publisher’s site.
